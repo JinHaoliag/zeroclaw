@@ -68,6 +68,15 @@ runs:
         # target builds with --no-default-features against the explicit list,
         # with no implicit feature drift.
         FEATURES="$(cargo run --quiet -p xtask --bin generate -- features --selection dist --target "$RELEASE_TARGET")"
+        # BEGIN custom: append WeChat channel
+        # `dist` does not include channel-wechat, so append it explicitly.
+        # Guard against an empty FEATURES value to avoid a leading comma.
+        if [ -n "$FEATURES" ]; then
+          FEATURES="${FEATURES},channel-wechat"
+        else
+          FEATURES="channel-wechat"
+        fi
+        # END custom: append WeChat channel
         echo "Resolved features: $FEATURES"
         # BEGIN qualification-only FEATURES output adapter
         if [ "$RELEASE_FEATURES_EVIDENCE" = "true" ]; then
